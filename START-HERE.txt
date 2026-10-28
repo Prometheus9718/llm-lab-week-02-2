@@ -1,0 +1,19 @@
+Lab สัปดาห์ที่ 1
+PDF → section chunks
+
+1. แตก ZIP ก่อน อย่ารันโค้ดจากหน้าต่าง ZIP
+2. เปิด index.html ใน browser เพื่ออ่านคู่มือทุกขั้นตอน
+3. ทำตามคู่มือตั้งแต่เลือก OS และติดตั้ง Ollama / VS Code / Python
+4. สร้าง project root ชื่อ llm-lab ตามบท 5
+5. คัดลอก scripts/, requirements.txt และ .gitignore จากแพ็กเกจนี้ไปที่ root ที่สร้าง
+6. แตก llm-lab-example-pdfs.zip แล้วนำ PDF ตัวอย่าง 3 ไฟล์ (หรือ PDF ของตนเอง)ใส่ data/pdfs/ ตั้งชื่อเต็มเป็น pdf1.pdf, pdf2.pdf, pdf3.pdf แล้วทำตามคู่มือต่อ
+
+README.th.md คือคู่มือนักเรียนต้นฉบับ เปิดใน VS Code แล้วใช้ Markdown Preview ได้
+lab-notes.template.md คือแบบบันทึกผลสำหรับคัดลอกไปกรอก
+SOURCES.md คือเอกสารอ้างอิงทางการ
+
+แพ็กเกจนี้ไม่รวม PDF ส่วนตัว โมเดลที่ดาวน์โหลด หรือ .venv ของครู
+อ่าน index.html ได้โดยไม่ติดตั้ง Node.js และไม่ต้องมี Internet
+การดาวน์โหลดแอป/โมเดล/libraries ครั้งแรกต้องมี Internet
+
+EXAMPLE-PDFS.md ระบุว่าหนังสือใดเป็น pdf1/pdf2/pdf3

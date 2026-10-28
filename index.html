@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>llm-lab · PDF → Section Chunks · Week 01</title>
+<style>
+:root{color-scheme:light;--bg:#f5f7fa;--paper:#fff;--ink:#17253b;--muted:#50627b;--line:#d8e1ed;--accent:#086b6d;--code:#eef3f9;--nav:#11253b;--navink:#deebfa}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;font:16px/1.85 system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--bg);color:var(--ink)}a{color:var(--accent);text-underline-offset:3px}header{position:sticky;top:0;z-index:10;background:var(--nav);color:var(--navink);padding:13px 25px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:3px solid #32b9ab}header strong{font-size:18px}header small{display:block;color:#bdd0e7}.controls{display:flex;gap:10px;flex-shrink:0}button{font:inherit;font-size:13px;border:1px solid #69829e;background:transparent;border-radius:7px;padding:6px 12px;cursor:pointer;color:inherit}button:hover{background:#ffffff15}.layout{max-width:1500px;margin:auto;display:grid;grid-template-columns:290px minmax(0,1fr);gap:30px;padding:30px}aside{position:sticky;top:108px;align-self:start;max-height:calc(100vh - 130px);overflow:auto;padding:15px 10px 25px 0;font-size:13px;line-height:1.6}aside strong{display:block;letter-spacing:.08em;font-size:12px;color:var(--muted);margin-bottom:12px}aside a{display:block;padding:7px 12px;border-left:2px solid var(--line);text-decoration:none;color:var(--muted)}aside a:hover{border-color:var(--accent);color:var(--accent);background:var(--code)}article{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:34px 44px;min-width:0;box-shadow:0 6px 28px #17304a08}h1,h2,h3{line-height:1.5;color:var(--ink)}h1{font-size:29px;margin-top:0}h2{font-size:24px;margin:52px 0 20px;padding-top:20px;border-top:1px solid var(--line)}h3{font-size:19px;margin:30px 0 15px}p{margin:16px 0}li{margin:7px 0}li p{margin:8px 0}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em;background:var(--code);border-radius:4px;padding:2px 5px;overflow-wrap:anywhere}pre{position:relative;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:20px 18px;overflow:auto;line-height:1.6;tab-size:4}pre code{padding:0;background:none;overflow-wrap:normal;font-size:13px}pre button{position:absolute;right:8px;top:8px;background:var(--paper);color:var(--muted);border-color:var(--line);padding:2px 8px;font-size:11px;opacity:.85}table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%;font-size:14px;line-height:1.7;margin:24px 0}th,td{border:1px solid var(--line);padding:12px;vertical-align:top;min-width:100px}th{background:var(--code);text-align:left}blockquote{border-left:4px solid var(--accent);padding-left:18px;color:var(--muted)}footer{padding:30px;text-align:center;color:var(--muted);font-size:13px}.links{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin-bottom:28px;font-size:14px}.links a{margin-right:18px}.dark{color-scheme:dark;--bg:#0d1726;--paper:#122036;--ink:#e4edf9;--muted:#a8bad3;--line:#2c405c;--accent:#69dbcf;--code:#192c46}details{margin-bottom:12px}summary{cursor:pointer}@media(max-width:1000px){.layout{grid-template-columns:220px minmax(0,1fr);gap:18px;padding:18px}article{padding:24px}}@media(max-width:760px){header{position:relative;align-items:flex-start;padding:14px 16px}header strong{font-size:15px}.layout{display:block;padding:10px}aside{position:static;max-height:240px;padding:12px;margin-bottom:14px;border:1px solid var(--line);border-radius:10px}article{padding:22px 16px}h1{font-size:24px}h2{font-size:21px}.controls button{font-size:11px;padding:5px}pre code{font-size:12px}table{font-size:13px}}@media print{header,aside,pre button,.links,footer{display:none}.layout{display:block;padding:0}article{border:none;box-shadow:none;padding:0}body{font-size:11pt;background:white;color:black}h2{break-after:avoid}pre{white-space:pre-wrap;break-inside:avoid}table{display:table;font-size:9pt}a{color:inherit}h1{font-size:23pt}}
+</style></head><body>
+<header><div><strong>llm-lab · PDF → Section Chunks</strong><small>Lab สัปดาห์ที่ 1 · macOS / Windows / Ubuntu</small></div><div class="controls"><button id="theme" type="button">สลับสี</button><button onclick="window.print()" type="button">พิมพ์คู่มือ</button></div></header>
+<div class="layout"><aside aria-label="สารบัญ"><strong>ทำตามลำดับ</strong><a href="#step-1">0. ทำความเข้าใจก่อนเริ่ม</a>
+<a href="#step-2">1. ตรวจว่าตนเองใช้ OS และ CPU แบบใด</a>
+<a href="#step-6">2. ดาวน์โหลดและติดตั้ง Ollama</a>
+<a href="#step-10">3. รู้จักโมเดล 3 ตัว แล้วดาวน์โหลดตัวเล็กที่สุด</a>
+<a href="#step-11">4. ติดตั้ง VS Code และ Python</a>
+<a href="#step-14">5. สร้าง project root ของตัวเอง</a>
+<a href="#step-15">6. สร้างโครงสร้างด้วย Terminal แล้วนำโค้ดที่ครูแจกเข้ามา</a>
+<a href="#step-16">7. นำ PDF สามไฟล์เข้าโฟลเดอร์</a>
+<a href="#step-17">8. สร้าง Python virtual environment</a>
+<a href="#step-18">9. ติดตั้ง library และเลือก interpreter ใน VS Code</a>
+<a href="#step-19">10. ตรวจ setup แล้วทดลอง embedding</a>
+<a href="#step-20">11. ดึงข้อความจาก PDF แรก และนับ characters ทุกหน้า</a>
+<a href="#step-21">12. ดูบรรทัดและชื่อหัวข้อของ PDF แรก</a>
+<a href="#step-22">13. สร้างแผนแบ่งหัวข้อ</a>
+<a href="#step-23">14. ตรวจและแก้ boundaries.json ใน VS Code</a>
+<a href="#step-24">15. สร้าง sections ตามหัวข้อที่ตรวจแล้ว</a>
+<a href="#step-25">16. แบ่งแต่ละ section เป็น chunks</a>
+<a href="#step-26">17. ตรวจผล PDF แรกให้เห็นภาพ</a>
+<a href="#step-27">18. ทำ PDF ที่สองและสามด้วยตนเอง</a>
+<a href="#step-28">19. ส่งงานและจบคาบ</a>
+<a href="#step-29">ตารางไฟล์ Python: ต้องแก้อะไรบนเครื่องส่วนตัว?</a>
+<a href="#step-30">หากติดปัญหา</a>
+<a href="#step-31">ผลทดสอบและชุดตรวจสำหรับครู</a></aside><article><div class="links"><a href="README.th.md">ต้นฉบับ Markdown</a><a href="INSTRUCTOR.th.md">คู่มือครู</a><a href="lab-notes.template.md">แบบบันทึกผล</a><a href="SOURCES.md">แหล่งอ้างอิง</a><a href="EXAMPLE-PDFS.md">PDF ตัวอย่าง</a><a href="VALIDATION.md">ผลทดสอบ</a></div><h1>Lab สัปดาห์ที่ 1: จาก PDF ไปเป็น section chunks ด้วยเครื่องของเราเอง</h1>
+<p>คู่มือนักเรียน • macOS / Windows / Ubuntu • ตรวจเอกสารติดตั้งวันที่ 17 ตุลาคม 2026</p>
+<p>ทุกคนเปิดแอป พิมพ์คำสั่ง และรัน Python บนเครื่องของตนเอง ครูสาธิต PDF แรกพร้อมกัน จากนั้นนักเรียนทำ PDF อีกสองไฟล์ด้วยตนเอง ไฟล์โค้ดทั้งหมดแยกอยู่ใน <code>scripts/</code> และเปิดอ่านได้ก่อนรัน</p>
+<p>สิ่งที่จะทำได้เมื่อจบคาบ:</p>
+<ul>
+<li>ติดตั้ง Ollama และทดลองเปลี่ยนประโยคสั้นเป็นเวกเตอร์ด้วยโมเดลขนาดเล็ก</li>
+<li>ใช้ VS Code และ Terminal สร้างโปรเจกต์และ Python virtual environment</li>
+<li>อ่าน PDF แสดงจำนวนหน้าและจำนวน characters ของแต่ละหน้า</li>
+<li>เก็บข้อความพร้อมเลขหน้า ตำแหน่งบรรทัด และสารบัญที่ฝังใน PDF</li>
+<li>ตรวจและแก้ขอบเขตหัวข้อ แล้วสร้าง sections และ chunks ที่อ้างอิงกลับไปยังหน้า/บรรทัดได้</li>
+<li>ทำขั้นตอนเดิมกับ PDF ที่สองและสาม โดยเปลี่ยนเฉพาะค่า <code>--pdf</code></li>
+</ul>
+<p>สัปดาห์นี้จบที่ไฟล์ <code>chunks.jsonl</code> ยังไม่มีขั้นฝังเวกเตอร์ของ PDF ทั้งเล่ม สร้าง vector database หรือถามตอบหนังสือ โมเดล embedding ใช้เป็นการทดลองสั้น ๆ ให้เห็นบทบาทของโมเดลก่อน ส่วนการอ่านข้อความและแยกหัวข้อใช้โค้ดอ่าน PDF และการตรวจของผู้เรียน</p>
+<h2 id="step-1">0. ทำความเข้าใจก่อนเริ่ม</h2>
+<pre><code class="language-text">ทดลองโมเดล: ประโยคสั้น → Ollama + all-minilm → เวกเตอร์ตัวเลข
+
+งาน PDF: PDF → ข้อความ/บรรทัด/เลขหน้า → เสนอหัวข้อ → นักเรียนตรวจหัวข้อ
+        → sections ตามหัวข้อ → chunks ภายในแต่ละ section → จบคาบ
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>คำ</th>
+<th>ความหมายใน lab นี้</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Terminal</td>
+<td>หน้าต่างพิมพ์คำสั่ง เช่น Terminal ใน VS Code, Ghostty หรือ PowerShell</td>
+</tr>
+<tr>
+<td>Shell</td>
+<td>โปรแกรมที่อ่านคำสั่ง: macOS ใช้ zsh, Ubuntu ใช้ bash, Windows ใช้ PowerShell</td>
+</tr>
+<tr>
+<td>Project root</td>
+<td>โฟลเดอร์หลัก <code>llm-lab</code> ที่มี <code>scripts</code>, <code>data</code>, <code>requirements.txt</code></td>
+</tr>
+<tr>
+<td>Python environment</td>
+<td><code>.venv</code> เก็บ Python environment และ libraries ของโปรเจกต์นี้</td>
+</tr>
+<tr>
+<td>Ollama</td>
+<td>โปรแกรมรันโมเดลในเครื่องและเปิด API ให้ Python เรียก</td>
+</tr>
+<tr>
+<td>Embedding model</td>
+<td>แปลงข้อความเป็นเวกเตอร์ตัวเลขเพื่อเปรียบเทียบความหมาย</td>
+</tr>
+<tr>
+<td>PDF parser</td>
+<td>อ่านข้อมูลที่อยู่ใน PDF เช่น text layer, font, ตำแหน่งข้อความ</td>
+</tr>
+<tr>
+<td>OCR</td>
+<td>รู้จำตัวอักษรจากภาพ ใช้เมื่อข้อความอยู่ในภาพสแกน/ภาพถ่าย</td>
+</tr>
+<tr>
+<td>Section</td>
+<td>ส่วนของเอกสารที่อิงหัวข้อและลำดับหัวข้อ</td>
+</tr>
+<tr>
+<td>Chunk</td>
+<td>ชิ้นข้อความขนาดจำกัดภายใน section เพื่อเตรียมนำไปค้นหาในอนาคต</td>
+</tr>
+<tr>
+<td>JSON / JSONL</td>
+<td>JSON เก็บโครงสร้างข้อมูล; JSONL เก็บหนึ่ง JSON record ต่อหนึ่งบรรทัด</td>
+</tr>
+</tbody></table>
+<p><strong>การเลือก PDF:</strong> เตรียม 3 ไฟล์ ไฟล์แรกควรเป็น PDF ที่เลือกคัดลอกข้อความได้ มีอย่างน้อย 2 หัวข้อ และเป็นหน้าแบบคอลัมน์เดียวประมาณ 5–30 หน้า เพื่อให้ตรวจผลได้ทันในคาบ ไฟล์ที่สอง/สามเลือกต่างรูปแบบได้ หากเป็นภาพสแกนล้วน ให้บันทึกผลว่าไม่พบ text layer แล้วเปลี่ยนเป็นไฟล์มีข้อความสำหรับทำ section chunks ในคาบนี้ เราจะเรียน OCR แยกภายหลัง</p>
+<p>ใช้คอมพิวเตอร์ที่เปิด VS Code และ Python ได้ พร้อมพื้นที่ว่างสำหรับตัวติดตั้ง libraries และ PDF ขนาดโมเดล 46 MB เป็นขนาดไฟล์ดาวน์โหลด การใช้ RAM จริงยังขึ้นกับ runtime และงานที่รัน เครื่องไม่มี GPU ใช้ทำแบบฝึกหัดนี้ได้ โดยความเร็วขึ้นกับเครื่อง</p>
+<p><strong>วิธีอ่านคำสั่ง:</strong> คัดลอกเฉพาะข้อความในกรอบ code ไม่คัดลอก <code>❯</code>, <code>$</code>, <code>PS&gt;</code> หรือเครื่องหมายกรอบ ``` รันทีละคำสั่งแล้วรอให้ prompt กลับมา คำสั่งของ Windows กับ macOS/Ubuntu เลือกทำเฉพาะส่วนของ OS ตนเอง หลัง activate environment แล้ว คำสั่ง <code>python scripts/...</code> ใช้รูปแบบเดียวกันได้</p>
+<h2 id="step-2">1. ตรวจว่าตนเองใช้ OS และ CPU แบบใด</h2>
+<h3 id="step-3">macOS</h3>
+<ol>
+<li>คลิกโลโก้ Apple มุมซ้ายบน → <strong>About This Mac</strong></li>
+<li>ดูเวอร์ชัน macOS และช่อง Chip/Processor</li>
+<li>ถ้าขึ้น Apple M1/M2/M3/M4/... ให้เลือกตัวติดตั้ง Apple silicon หรือ Universal; ถ้าขึ้น Intel ให้เลือก Intel หรือ Universal</li>
+<li>Ollama สำหรับ Mac ต้อง macOS 14 Sonoma ขึ้นไป ตาม <a href="https://docs.ollama.com/macos">คู่มือ Ollama macOS</a></li>
+<li>เปิด Terminal โดยกด <code>Command + Space</code> พิมพ์ <code>Terminal</code> แล้ว Enter หรือใช้ Ghostty ที่ติดตั้งอยู่แล้ว</li>
+</ol>
+<h3 id="step-4">Windows</h3>
+<ol>
+<li>กด <code>Windows + I</code> → <strong>System → About</strong></li>
+<li>ดู Windows version และ System type โดยเครื่องส่วนใหญ่ในคลาสจะเป็น x64</li>
+<li>Ollama ระบุ Windows 10 22H2 หรือใหม่กว่า ตาม <a href="https://docs.ollama.com/windows">คู่มือ Ollama Windows</a></li>
+<li>ถ้าเครื่องเป็น Windows ARM หรือระบบเก่ากว่านี้ ให้ครูตรวจตัวติดตั้งและ platform ที่รองรับก่อน</li>
+<li>เปิด Start พิมพ์ <code>PowerShell</code> แล้วเปิดแบบปกติสำหรับทำงานในโปรเจกต์</li>
+</ol>
+<h3 id="step-5">Ubuntu</h3>
+<ol>
+<li><p>เปิด <strong>Settings → About</strong> ดู Ubuntu version</p>
+</li>
+<li><p>เปิด Terminal ด้วย <code>Ctrl + Alt + T</code></p>
+</li>
+<li><p>ดูสถาปัตยกรรมเครื่อง:</p>
+<pre><code class="language-bash">uname -m
+</code></pre>
+<p><code>x86_64</code> คือ Intel/AMD 64-bit; <code>aarch64</code> คือ ARM64</p>
+</li>
+<li><p>คำสั่งติดตั้งแพ็กเกจระบบด้านล่างต้องใช้สิทธิ์ <code>sudo</code> หากเป็นเครื่องของโรงเรียนที่ไม่มีสิทธิ์นี้ ให้ครู/ผู้ดูแลเตรียมโปรแกรมให้ก่อน</p>
+</li>
+</ol>
+<h2 id="step-6">2. ดาวน์โหลดและติดตั้ง Ollama</h2>
+<p>เปิดเบราว์เซอร์ ไปที่ <a href="https://ollama.com/download">https://ollama.com/download</a> แล้วเลือก OS จริงของเครื่อง</p>
+<h3 id="step-7">macOS: ใช้ตัวติดตั้งแบบแอป</h3>
+<ol>
+<li><p>เลือก <strong>macOS</strong> และดาวน์โหลดแบบ manual สำหรับ Mac</p>
+</li>
+<li><p>เปิดไฟล์ <code>.dmg</code> ที่ดาวน์โหลดเสร็จ</p>
+</li>
+<li><p>ลาก <strong>Ollama</strong> เข้า <strong>Applications</strong></p>
+</li>
+<li><p>เปิด <strong>Finder → Applications → Ollama</strong></p>
+</li>
+<li><p>ถ้ามีคำถามเรื่องเปิดแอปที่ดาวน์โหลดมา ให้ยืนยันเปิดแอปจากแหล่งทางการ หากแอปขอสร้าง CLI link ให้ทำตามหน้าต่างแจ้ง</p>
+</li>
+<li><p>ปิด Terminal เดิมแล้วเปิดใหม่ เพื่อให้เห็นคำสั่งที่เพิ่งติดตั้ง</p>
+</li>
+<li><p>พิมพ์:</p>
+<pre><code class="language-bash">ollama --version
+</code></pre>
+</li>
+<li><p>ควรเห็น <code>ollama version is ...</code> เลขเวอร์ชันอาจต่างจากของครู เปิด Ollama ค้างไว้เบื้องหลังระหว่างทำ lab</p>
+</li>
+</ol>
+<p>ขั้นตอนลากแอปและ CLI link อ้างอิง <a href="https://docs.ollama.com/macos">Ollama macOS</a></p>
+<h3 id="step-8">Windows: ใช้ตัวติดตั้ง Windows</h3>
+<ol>
+<li><p>เลือก <strong>Windows</strong> จากหน้า download</p>
+</li>
+<li><p>เปิดไฟล์ <code>OllamaSetup.exe</code></p>
+</li>
+<li><p>ทำตามตัวติดตั้งสำหรับบัญชีผู้ใช้ของตนเอง</p>
+</li>
+<li><p>เมื่อเสร็จ เปิด Start → ค้นหา <strong>Ollama</strong> → เปิดแอป</p>
+</li>
+<li><p>ปิด PowerShell/Terminal เดิม แล้วเปิดใหม่</p>
+</li>
+<li><p>พิมพ์:</p>
+<pre><code class="language-powershell">ollama --version
+</code></pre>
+</li>
+<li><p>ควรเห็นเลขเวอร์ชัน แอป Ollama จะทำงานเบื้องหลัง ไม่ต้องเปิดหน้าต่างแชตเพื่อใช้ embedding API</p>
+</li>
+</ol>
+<p>รายละเอียดจาก <a href="https://docs.ollama.com/windows">Ollama Windows</a></p>
+<h3 id="step-9">Ubuntu: ติดตั้งผ่าน Terminal</h3>
+<ol>
+<li><p>ติดตั้งเครื่องมือที่ installer ใช้:</p>
+<pre><code class="language-bash">sudo apt update
+sudo apt install curl zstd
+</code></pre>
+</li>
+<li><p>เรียก installer จากเว็บทางการ:</p>
+<pre><code class="language-bash">curl -fsSL https://ollama.com/install.sh | sh
+</code></pre>
+</li>
+<li><p>ตรวจเวอร์ชัน:</p>
+<pre><code class="language-bash">ollama --version
+</code></pre>
+</li>
+<li><p>ตรวจ service:</p>
+<pre><code class="language-bash">systemctl status ollama --no-pager
+</code></pre>
+</li>
+<li><p>ถ้ายังไม่ active ให้เริ่ม service:</p>
+<pre><code class="language-bash">sudo systemctl start ollama
+</code></pre>
+</li>
+<li><p>ถ้าเครื่องไม่ได้ใช้ systemd ให้ดู <a href="https://docs.ollama.com/linux">Ollama Linux</a> และเปิด Terminal แยกเพื่อรัน <code>ollama serve</code> ค้างไว้ อีก Terminal ใช้ทำ lab ต่อ หาก server ทำงานแล้วไม่ต้องรัน <code>serve</code> ซ้ำ</p>
+</li>
+</ol>
+<p><strong>Checkpoint:</strong> ทุกคนเรียก <code>ollama --version</code> ได้ และมี Ollama server ทำงานอยู่หนึ่งตัว</p>
+<h2 id="step-10">3. รู้จักโมเดล 3 ตัว แล้วดาวน์โหลดตัวเล็กที่สุด</h2>
+<p>ทั้งสามตัวนี้เป็น <strong>embedding model</strong> มีหน้าที่เปลี่ยนข้อความเป็นตัวเลข ไม่ใช่โมเดลแชตสำหรับตอบคำถามและไม่ใช่ OCR ที่อ่านข้อความจากภาพ</p>
+<table>
+<thead>
+<tr>
+<th>ตัวเลือก</th>
+<th>มาจากไหน / ใช้ทำอะไร</th>
+<th align="right">ดาวน์โหลดโดยประมาณ</th>
+<th align="right">มิติของเวกเตอร์</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>all-minilm:22m</code></strong> — ใช้ร่วมกันในคลาส</td>
+<td>Sentence Transformers รุ่น all-MiniLM-L6-v2 พัฒนาต่อจาก MiniLM; ใช้เปรียบเทียบประโยคสั้น เน้นอังกฤษ</td>
+<td align="right"><strong>46 MB</strong></td>
+<td align="right">384</td>
+</tr>
+<tr>
+<td><code>nomic-embed-text:v1.5</code></td>
+<td>Nomic AI; embedding สำหรับ retrieval ข้อความ ใช้ task prefixes เมื่อนำไปค้นเอกสาร</td>
+<td align="right">274 MB</td>
+<td align="right">768</td>
+</tr>
+<tr>
+<td><code>embeddinggemma-2:270m-q8_0-text</code></td>
+<td>Google DeepMind; ส่วนข้อความของ EmbeddingGemma 2 รองรับข้อความ/โค้ดหลายภาษา</td>
+<td align="right">304 MB สำหรับ tag นี้; <code>:270m</code> อาจต่างตาม backend</td>
+<td align="right">768</td>
+</tr>
+</tbody></table>
+<p>ตรวจรุ่น/ขนาดจาก <a href="https://ollama.com/library/all-minilm/tags">Ollama all-minilm</a>, <a href="https://ollama.com/library/nomic-embed-text">Nomic</a>, <a href="https://ollama.com/library/embeddinggemma-2/tags">EmbeddingGemma 2 tags</a> และที่มาจาก <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">MiniLM model card</a>, <a href="https://huggingface.co/nomic-ai/nomic-embed-text-v1.5">Nomic model card</a> ขนาดเป็นไฟล์โมเดล ไม่รวมแอปและ RAM ขณะรัน</p>
+<p>เลือก <code>all-minilm:22m</code> เพื่อให้ดาวน์โหลดน้อยและทดลองประโยคอังกฤษสั้นเหมือนกันทั้งคลาส ความเล็กเหมาะกับการเรียนบทบาท embedding ส่วนคุณภาพภาษาไทย/งานจริงต้องประเมินกับข้อมูลจริงภายหลัง ขนาด context ของ runtime กับ model card อาจต่างกัน จึงใช้ประโยคสั้นใน demo และยังไม่ฝังเวกเตอร์ของ chunks ที่สร้างทั้งชุด</p>
+<p>รันใน Terminal ของ OS ใดก็ได้:</p>
+<pre><code class="language-text">ollama pull all-minilm:22m
+</code></pre>
+<p>รอจนเห็น <code>success</code> แล้วรัน:</p>
+<pre><code class="language-text">ollama list
+</code></pre>
+<p>ควรมี <code>all-minilm:22m</code> ในรายการ ไม่ต้องดาวน์โหลดอีกสองรุ่นเพื่อจบ lab หากเน็ตหลุดให้รัน <code>pull</code> คำสั่งเดิมเมื่อเน็ตพร้อม ไม่ต้องลบโฟลเดอร์โมเดล ถ้าหน้าจอยังดาวน์โหลดอยู่ ให้รอ ไม่กด <code>Control + C</code> เว้นแต่ต้องการยกเลิกจริง ๆ</p>
+<h2 id="step-11">4. ติดตั้ง VS Code และ Python</h2>
+<h3 id="step-12">4.1 VS Code</h3>
+<ol>
+<li>เปิด <a href="https://code.visualstudio.com/download">https://code.visualstudio.com/download</a></li>
+<li>macOS: เลือกตาม Apple silicon/Intel/Universal เปิดตัวติดตั้งแล้วนำ Visual Studio Code เข้า Applications</li>
+<li>Windows: เลือก <strong>User Installer x64</strong> สำหรับเครื่อง x64 ติดตั้งตามหน้าต่าง เลือก Add to PATH หากมีตัวเลือก แล้วเปิด Terminal ใหม่</li>
+<li>Ubuntu: ดาวน์โหลด <code>.deb</code> ตาม CPU เปิดด้วย Software Install หรือเปิด Terminal ใน Downloads แล้วติดตั้งไฟล์ <code>.deb</code> ที่ดาวน์โหลดด้วย <code>sudo apt install ./ชื่อไฟล์จริง.deb</code></li>
+<li>เปิดแอป <strong>Visual Studio Code</strong></li>
+<li>เปิดแท็บ <strong>Extensions</strong> ด้านซ้าย ค้นหา <strong>Python</strong> เลือกผู้เผยแพร่ <strong>Microsoft</strong> แล้วกด Install</li>
+</ol>
+<p>คู่มือแยก OS: <a href="https://code.visualstudio.com/docs/setup/mac">Mac</a>, <a href="https://code.visualstudio.com/docs/setup/windows">Windows</a>, <a href="https://code.visualstudio.com/docs/setup/linux">Linux</a></p>
+<h3 id="step-13">4.2 Python</h3>
+<p>ใช้ Python ปกติแบบ 64-bit ในช่วง 3.10–3.14 ที่มี wheel ของ PyMuPDF โดยแนะนำ 3.12–3.14 ในคลาส ไม่เลือก free-threaded/experimental build สำหรับแบบฝึกหัดนี้ <a href="https://pymupdf.readthedocs.io/en/latest/installation.html">PyMuPDF ระบุ platform และเวอร์ชัน Python ที่รองรับ</a></p>
+<p><strong>macOS ติดตั้งใหม่</strong></p>
+<ol>
+<li>เปิด <a href="https://www.python.org/downloads/release/python-3148/">Python 3.14.8 release page</a></li>
+<li>เลื่อนหัวข้อ Files → เลือก <strong>macOS installer</strong> ไม่เลือก source archive</li>
+<li>เปิด <code>.pkg</code> แล้วทำตาม installer</li>
+<li>ปิด Terminal เดิม เปิดใหม่ แล้วรัน <code>python3 --version</code></li>
+<li>ถ้ามี 3.12/3.13/3.14 อยู่แล้วใช้ต่อได้ ถ้ามี Python หลายตัว จดว่าคำสั่ง <code>python3</code> เรียกตัวใด</li>
+</ol>
+<p><strong>Windows ติดตั้งใหม่</strong></p>
+<ol>
+<li><p>เปิด <a href="https://www.python.org/downloads/release/python-3148/">Python 3.14.8 release page</a></p>
+</li>
+<li><p>หัวข้อ Files เลือก <strong>Windows installer (64-bit)</strong> สำหรับเครื่อง x64 คู่มือนี้ใช้ traditional installer เพื่อให้หน้าจอในคลาสเหมือนกัน</p>
+</li>
+<li><p>เปิดตัวติดตั้ง เลือก <strong>Add python.exe to PATH</strong> แล้ว Install Now</p>
+</li>
+<li><p>ปิด PowerShell เดิม เปิดใหม่ แล้วรัน:</p>
+<pre><code class="language-powershell">py -3.14 --version
+</code></pre>
+</li>
+<li><p>หากมี 3.12 หรือ 3.13 อยู่แล้วใช้ได้ ให้ใช้เลขเวอร์ชันที่ติดตั้งจริงตอนสร้าง <code>.venv</code> เช่น <code>py -3.12 -m venv .venv</code></p>
+</li>
+<li><p>หากใช้ Python install manager อยู่แล้ว ให้ติดตั้งเวอร์ชัน 3.14 ด้วย <code>py install 3.14</code> และตรวจว่าคำสั่งเวอร์ชันข้างต้นทำงานได้</p>
+</li>
+</ol>
+<p><strong>Ubuntu</strong></p>
+<pre><code class="language-bash">sudo apt update
+sudo apt install python3 python3-venv python3-pip
+python3 --version
+</code></pre>
+<p>ใช้ Python ของ Ubuntu ตามปกติ Ubuntu 24.04 มักเป็น 3.12 และ 22.04 เป็น 3.10 ซึ่งใช้สคริปต์นี้ได้ ไม่ต้องเปลี่ยน symlink ของ <code>/usr/bin/python3</code> <a href="https://ubuntu.com/developers/docs/howto/python-setup/">Ubuntu Python setup</a></p>
+<h2 id="step-14">5. สร้าง project root ของตัวเอง</h2>
+<p>เปิด Terminal ของ OS ก่อนเพื่อสร้างโฟลเดอร์ จากนั้นเปิดโฟลเดอร์นั้นใน VS Code ชื่อโปรเจกต์คือ <code>llm-lab</code> ทุกคนใช้โค้ดเดียวกันได้โดยชื่อผู้ใช้ต่างกัน</p>
+<p><strong>macOS / Ubuntu</strong></p>
+<pre><code class="language-bash">mkdir -p &quot;$HOME/Documents/llm-lab&quot;
+cd &quot;$HOME/Documents/llm-lab&quot;
+pwd
+</code></pre>
+<p>ตัวอย่าง Mac อาจได้ <code>/Users/alice/Documents/llm-lab</code> ส่วน Ubuntu อาจได้ <code>/home/alice/Documents/llm-lab</code> หากเครื่องไม่มี Documents คำสั่งนี้จะสร้างให้</p>
+<p><strong>Windows PowerShell</strong></p>
+<pre><code class="language-powershell">$labRoot = Join-Path ([Environment]::GetFolderPath(&quot;MyDocuments&quot;)) &quot;llm-lab&quot;
+New-Item -ItemType Directory -Force -Path $labRoot
+Set-Location $labRoot
+Get-Location
+</code></pre>
+<p>คำสั่งนี้ใช้โฟลเดอร์ Documents จริงของบัญชี รวมกรณีที่อยู่ใน OneDrive ผลอาจเป็น <code>C:\Users\alice\Documents\llm-lab</code> หรือ path ที่โรงเรียนตั้งไว้ ให้ดูผลของ <code>Get-Location</code></p>
+<p>ต่อไปใน VS Code:</p>
+<ol>
+<li>เลือกเมนู <strong>File → Open Folder…</strong></li>
+<li>เลือก <code>llm-lab</code> ที่เพิ่งสร้าง แล้วกด Open/Select Folder</li>
+<li>หากถาม workspace trust และเป็นโฟลเดอร์/โค้ด lab ที่ครูแจก ให้เลือกเชื่อถือ workspace นี้</li>
+<li>Explorer ด้านซ้ายต้องมี <code>NAV-ECOSYSTEM</code> เป็นโฟลเดอร์บนสุด</li>
+<li>เลือก <strong>Terminal → New Terminal</strong> จะเปิดช่อง Terminal ด้านล่างของ VS Code</li>
+<li>ใช้ลูกศรข้างปุ่ม <code>+</code> ของ Terminal เลือก profile ให้ตรง: Windows = PowerShell, macOS = zsh, Ubuntu = bash</li>
+<li>พิมพ์ <code>pwd</code> (macOS/Ubuntu) หรือ <code>Get-Location</code> (PowerShell) ยืนยันว่าตำแหน่งลงท้าย <code>llm-lab</code></li>
+</ol>
+<p>หากเคยเปลี่ยนไปอยู่โฟลเดอร์อื่น ให้กลับ root ด้วย <code>cd &quot;$HOME/Documents/llm-lab&quot;</code> บน macOS/Ubuntu หรือ <code>Set-Location (Join-Path ([Environment]::GetFolderPath(&quot;MyDocuments&quot;)) &quot;llm-lab&quot;)</code> บน PowerShell</p>
+<p><strong>ไม่ต้องพึ่ง <code>code .</code></strong> ถ้าติดตั้งคำสั่ง <code>code</code> ไว้แล้วใช้ <code>code .</code> จาก root ได้ ส่วน Mac เปิด Command Palette แล้วเลือก <code>Shell Command: Install &#39;code&#39; command in PATH</code> เพื่อติดตั้งคำสั่งนี้ได้ แต่ File → Open Folder ใช้ได้เลย</p>
+<h2 id="step-15">6. สร้างโครงสร้างด้วย Terminal แล้วนำโค้ดที่ครูแจกเข้ามา</h2>
+<p>ใน Terminal ภายใน VS Code ที่อยู่ root:</p>
+<p><strong>macOS / Ubuntu</strong></p>
+<pre><code class="language-bash">mkdir -p scripts data/pdfs data/extracted data/demo
+</code></pre>
+<p><strong>Windows PowerShell</strong></p>
+<pre><code class="language-powershell">New-Item -ItemType Directory -Force -Path scripts, data/pdfs, data/extracted, data/demo
+</code></pre>
+<p>ครูแจก ZIP ของ workshop ให้ดาวน์โหลดและ Extract ก่อน ไม่รัน Python จากภายใน ZIP จากโฟลเดอร์ที่แตกแล้ว คัดลอกโฟลเดอร์ <code>scripts</code> พร้อม <code>requirements.txt</code> และ <code>.gitignore</code> มาไว้ตรง root <code>llm-lab</code> เปิดดูใน Explorer ของ VS Code ให้เห็นดังนี้:</p>
+<p>หากมองไม่เห็น <code>.gitignore</code> ใน Finder บน Mac ให้กด <code>Command + Shift + .</code> เพื่อแสดงไฟล์ซ่อน ส่วน VS Code Explorer แสดงไฟล์นี้ได้ตามปกติ ไฟล์นี้ช่วยกันไม่ให้ <code>.venv</code> และข้อมูลที่สร้างขึ้นถูกเพิ่มเข้า Git โดยไม่ตั้งใจ</p>
+<pre><code class="language-text">llm-lab/
+├── requirements.txt
+├── .gitignore
+├── scripts/
+│   ├── lab_common.py
+│   ├── section_engine.py
+│   ├── 01_check_setup.py
+│   ├── 02_embedding_demo.py
+│   ├── 03_extract_pdf.py
+│   ├── 04_plan_sections.py
+│   ├── 05_build_sections.py
+│   ├── 06_chunk_sections.py
+│   └── 07_preview.py
+└── data/
+    ├── pdfs/
+    ├── extracted/
+    └── demo/
+</code></pre>
+<p>ถ้าลากโฟลเดอร์ผ่านหน้าต่าง file manager ให้ Copy มาที่ root ไม่ลากโฟลเดอร์ ZIP ทั้งชั้นมาซ้อนเป็น <code>llm-lab/ชื่อแพ็กเกจ/scripts</code> เพราะ path ในบทเรียนจะคลาดกัน ถ้าต้องสร้างไฟล์ด้วยมือ ให้กด New File ใน Explorer ตั้งชื่อให้ตรง แล้วคัดลอกจากไฟล์ <code>.py</code> ที่แจก อย่าพิมพ์ทั้งโปรแกรมลงใน Terminal</p>
+<p>ตรวจว่าคัดลอกถูก:</p>
+<p>macOS/Ubuntu:</p>
+<pre><code class="language-bash">ls scripts
+cat requirements.txt
+</code></pre>
+<p>PowerShell:</p>
+<pre><code class="language-powershell">Get-ChildItem scripts
+Get-Content requirements.txt
+</code></pre>
+<p>ควรเห็น <code>PyMuPDF==1.28.2</code> ใน requirements มี external Python library เพียงตัวเดียว โมดูลอื่น เช่น <code>json</code>, <code>pathlib</code>, <code>urllib</code>, <code>argparse</code> มากับ Python แล้ว</p>
+<h2 id="step-16">7. นำ PDF สามไฟล์เข้าโฟลเดอร์</h2>
+<ol>
+<li>เปิด Finder / File Explorer / Files หา PDF สามไฟล์ของตนเอง</li>
+<li>ใน VS Code Explorer ขยาย <code>data</code> แล้วขยาย <code>pdfs</code></li>
+<li>ลากไฟล์จาก file manager วางบนชื่อโฟลเดอร์ <code>pdfs</code> ใน Explorer อย่าวางกลาง editor เพราะจะเป็นเพียงการเปิดไฟล์</li>
+<li>ถ้ามีคำถาม Copy ให้เลือก Copy ถ้าเห็นว่าลากแล้วเปิดอ่านอย่างเดียว ให้ใช้ Copy/Paste ไฟล์เข้า <code>data/pdfs</code> ผ่าน file manager แทน</li>
+<li>เปิดการแสดงนามสกุลไฟล์ก่อนเปลี่ยนชื่อ: Windows File Explorer เลือก View → Show → File name extensions (Windows 10 ใช้ View → File name extensions); macOS Finder เลือก Settings → Advanced → Show all filename extensions; Ubuntu Files แสดง <code>.pdf</code> ในชื่อไฟล์อยู่แล้ว</li>
+<li>เปลี่ยนชื่อสำเนาใน <code>data/pdfs</code> ด้วยคลิกขวา → Rename ให้ชื่อเต็มเป็น <code>pdf1.pdf</code>, <code>pdf2.pdf</code>, <code>pdf3.pdf</code> ไฟล์ต้นทางไม่ต้องเปลี่ยนชื่อ คำว่า pdf1, pdf2, pdf3 ในคลาสหมายถึงชื่อก่อนนามสกุล และแต่ละไฟล์ต้องมี <code>.pdf</code> ต่อท้ายเพียงครั้งเดียว</li>
+<li>ตรวจชื่อเต็มใน VS Code ว่าเป็น <code>pdf1.pdf</code> ไม่ใช่ <code>pdf1</code> หรือ <code>pdf1.pdf.pdf</code> จากนั้นใช้ <code>pdf1.pdf</code> ทำพร้อมครู อีกสองไฟล์ทำด้วยตนเองช่วงท้าย</li>
+</ol>
+<p>ชุดตัวอย่างของคลาสนี้ใช้ <strong>pdf1 = Text Processing with NLTK 3 Cookbook</strong>, <strong>pdf2 = Storytelling with Data</strong>, <strong>pdf3 = Programming the Internet of Things</strong> ดู <a href="EXAMPLE-PDFS.md">รายชื่อและไฟล์ตัวอย่าง</a> แตก ZIP ตัวอย่าง PDF แยกต่างหาก แล้วลากสามไฟล์เข้า <code>data/pdfs/</code> ตามขั้นตอนข้างบน หากใช้สำเนาที่ตั้งชื่อให้แล้ว ไม่ต้อง Rename ซ้ำ หนังสือเต็มเล่มเหล่านี้มี 304–420 หน้า จึงต้องเผื่อเวลาตรวจหัวข้อ</p>
+<p>ตรวจรายการ:</p>
+<p>macOS/Ubuntu:</p>
+<pre><code class="language-bash">ls -lh data/pdfs
+</code></pre>
+<p>PowerShell:</p>
+<pre><code class="language-powershell">Get-ChildItem data/pdfs
+</code></pre>
+<p>ไม่จำเป็นต้องเปลี่ยนชื่อหากต้องการเก็บชื่อเดิม แต่ต้องแก้ <code>--pdf &quot;data/pdfs/ชื่อจริง.pdf&quot;</code> ในคำสั่งทุกครั้ง และใส่เครื่องหมายคำพูดเมื่อชื่อมีช่องว่าง</p>
+<h2 id="step-17">8. สร้าง Python virtual environment</h2>
+<p>ตรวจอีกครั้งว่า Terminal อยู่ root <code>llm-lab</code> ก่อนสร้าง <code>.venv</code></p>
+<p><strong>macOS / Ubuntu</strong></p>
+<pre><code class="language-bash">python3 -m venv .venv
+source .venv/bin/activate
+</code></pre>
+<p><strong>Windows PowerShell ที่ติดตั้ง Python 3.14</strong></p>
+<pre><code class="language-powershell">py -3.14 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+</code></pre>
+<p>หากใช้ Python 3.12 ให้เปลี่ยนเฉพาะคำสั่งสร้างเป็น <code>py -3.12 -m venv .venv</code> รุ่นอื่นใช้เลขที่ติดตั้งจริง</p>
+<p>ถ้าขึ้นว่า execution policy ไม่อนุญาต <code>Activate.ps1</code> ไม่จำเป็นต้องเปลี่ยนนโยบายเครื่อง เลือก Terminal profile เป็น <strong>Command Prompt</strong> เปิด Terminal ใหม่ใน root แล้วรัน:</p>
+<pre><code class="language-bat">.venv\Scripts\activate.bat
+</code></pre>
+<p>อีกวิธีคือเรียก <code>.\.venv\Scripts\python.exe</code> ตรงแทนคำว่า <code>python</code> ในทุกคำสั่ง เช่น <code>.\.venv\Scripts\python.exe scripts/01_check_setup.py</code> การ activate เป็นการปรับ PATH ของ shell; Python ยืนยันว่าเรียก interpreter ตรงได้โดยไม่ activate (<a href="https://docs.python.org/3/library/venv.html">venv docs</a>)</p>
+<p>หลัง activate แล้วทุก OS ตรวจด้วย:</p>
+<pre><code class="language-text">python -c &quot;import sys; print(sys.executable)&quot;
+</code></pre>
+<p>path ต้องมี <code>llm-lab</code> และ <code>.venv</code> เช่น <code>.venv/bin/python</code> หรือ <code>.venv\Scripts\python.exe</code> บาง prompt จะมี <code>(.venv)</code> แต่ใช้ path ของ interpreter เป็นหลักฐานได้ชัดกว่า</p>
+<h2 id="step-18">9. ติดตั้ง library และเลือก interpreter ใน VS Code</h2>
+<p>รันทีละคำสั่ง:</p>
+<pre><code class="language-text">python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -c &quot;import pymupdf; print(pymupdf.__version__)&quot;
+</code></pre>
+<p>คาดว่า PyMuPDF แสดง <code>1.28.2</code> ถ้าติดตั้งไม่สำเร็จ อย่าเปลี่ยนไปติดตั้งด้วย <code>sudo pip</code> ให้ตรวจ Python/venv และ error ก่อน</p>
+<p>ใน VS Code:</p>
+<ol>
+<li>เปิด Command Palette: Mac ใช้ <code>Command + Shift + P</code>; Windows/Ubuntu ใช้ <code>Ctrl + Shift + P</code></li>
+<li>พิมพ์ <strong>Python: Select Interpreter</strong></li>
+<li>เลือก Python ภายใน <code>.venv</code> ของ <code>llm-lab</code> ถ้าไม่ปรากฏ เลือก Enter interpreter path แล้วเลือกไฟล์ Python ใน <code>.venv</code></li>
+<li>กลับ Terminal เดิม ตรวจ <code>sys.executable</code> อีกครั้ง การเลือก interpreter ใน editor กับการ activate ใน Terminal ควรชี้ที่ environment เดียวกัน</li>
+</ol>
+<p>ดู <a href="https://code.visualstudio.com/docs/python/environments">VS Code Python environments</a></p>
+<h2 id="step-19">10. ตรวจ setup แล้วทดลอง embedding</h2>
+<p>เปิดอ่าน <code>scripts/01_check_setup.py</code> ก่อน สังเกตว่ามันแสดง OS, Python ที่ใช้อยู่ และเรียก Ollama API ในเครื่อง จากนั้นรัน:</p>
+<pre><code class="language-text">python scripts/01_check_setup.py
+</code></pre>
+<p>ควรเห็น <code>Virtual environment: yes</code>, PyMuPDF version, รายชื่อโมเดลที่มี <code>all-minilm:22m</code> และ <code>Setup ready.</code> หาก Ollama ยังติดต่อไม่ได้ ให้แก้ก่อนทดลองโมเดล ส่วนงาน PDF สามารถตรวจเฉพาะเครื่องมือด้วย <code>python scripts/01_check_setup.py --offline</code> แล้วทำบท 11 ต่อได้ โดยจดว่าการทดลองโมเดลยังไม่เสร็จ</p>
+<p>เปิดอ่านแล้วรัน:</p>
+<pre><code class="language-text">python scripts/02_embedding_demo.py
+</code></pre>
+<p>ตัวอย่างรูปแบบผล:</p>
+<pre><code class="language-text">Model: all-minilm:22m
+Dimensions: 384
+First 8 values: [...]
+Sentence 1: A cat is sleeping on a chair.
+Sentence 2: A kitten is resting on a seat.
+Sentence 3: A database stores customer transactions.
+Cosine similarity 1 vs 2: ...
+Cosine similarity 1 vs 3: ...
+</code></pre>
+<p>ตัวเลขจริงไม่จำเป็นต้องตรงกับเพื่อน ดูว่าเวกเตอร์มี 384 มิติ และอภิปรายว่าความใกล้ของตัวเลขสัมพันธ์กับประโยคอย่างไร cosine เป็นคะแนนเปรียบเทียบเวกเตอร์ ไม่ใช่เปอร์เซ็นต์ความมั่นใจของคำตอบ ไฟล์ตัวอย่างบันทึกที่ <code>data/demo/embedding-demo.json</code></p>
+<p>จุดที่แก้ได้: ตัวแปร <code>sentences</code> ใน <code>02_embedding_demo.py</code> เปลี่ยนประโยคอังกฤษสั้นเพื่อทดลองได้ โดยใช้สามประโยคตามโครงสร้างเดิม ถ้าจะเปลี่ยนโมเดลให้ pull ก่อน แล้วใช้ <code>--model ชื่อโมเดล</code> ในทั้ง <code>01</code> และ <code>02</code>; ไม่จำเป็นสำหรับงานที่ต้องส่ง</p>
+<p>เราเรียก <code>/api/embed</code> ผ่าน Python เพื่อให้ใช้คำสั่งเดียวบนทุก OS แทนการจัด quote ของ curl ใน PowerShell กับ bash ที่ต่างกัน (<a href="https://docs.ollama.com/api/embed">Ollama embeddings API</a>)</p>
+<h2 id="step-20">11. ดึงข้อความจาก PDF แรก และนับ characters ทุกหน้า</h2>
+<p>เปิดไฟล์ <code>scripts/03_extract_pdf.py</code> สังเกต <code>pymupdf.open</code>, การวนทีละหน้า และ <code>page.get_text(&quot;dict&quot;, ...)</code> ซึ่งเก็บบรรทัด/ขนาด font/พิกัดไว้ใช้หาหัวข้อ</p>
+<p>รัน:</p>
+<pre><code class="language-text">python scripts/03_extract_pdf.py --pdf &quot;data/pdfs/pdf1.pdf&quot;
+</code></pre>
+<p>ตัวอย่างรูปแบบผล ไม่ใช่ค่าบังคับสำหรับทุกไฟล์:</p>
+<pre><code class="language-text">PDF page    1:    134 characters; 8 lines; images=1
+PDF page    2:   1959 characters; 35 lines; images=0
+...
+Pages: ...
+Bookmarks: ...
+No extractable text - review visually: [...]
+Artifacts: .../data/extracted/pdf1-xxxxxxxxxx
+</code></pre>
+<p>จำนวน characters ในสคริปต์นี้คือ <code>len(text.strip())</code> โดย text มาจากบรรทัดที่ดึงออกมาคั่นด้วย newline จึงนับช่องว่าง/newline ภายในด้วย เป็นจำนวน Unicode code points ไม่ใช่ tokens และไม่เท่ากับจำนวนอักษรที่ตามองเห็นเสมอ โดยเฉพาะสระ/วรรณยุกต์บางภาษา จำนวนอาจต่างจาก extractor หรือ options ตัวอื่นได้</p>
+<p>เลข <strong>PDF page</strong> เริ่มที่ 1 สำหรับหน้าไฟล์จริง ส่วนเลขหน้าที่พิมพ์บนหนังสืออาจเป็น i, ii, 1 หรือค่าอื่น สคริปต์เก็บ <code>page_label</code> แยกไว้ อย่าเอาสองเลขนี้มาใช้แทนกัน</p>
+<p>ใน VS Code ขยาย <code>data/extracted</code> จะเห็นโฟลเดอร์ของเอกสารชื่อ <code>pdf1-...</code> ตัวอักษรท้ายมาจาก SHA-256 ของไฟล์ ช่วยให้ไฟล์คนละเนื้อหาที่ชื่อเหมือนกันไม่เขียนทับกัน สคริปต์พิมพ์ path จริงให้แล้ว ไม่ต้องคำนวณเอง</p>
+<table>
+<thead>
+<tr>
+<th>ไฟล์ที่สร้าง</th>
+<th>เปิดดูเพื่ออะไร</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>document.json</code></td>
+<td>ข้อมูลเอกสารทุกหน้าและ outline ในไฟล์เดียว</td>
+</tr>
+<tr>
+<td><code>pages.jsonl</code></td>
+<td>หนึ่ง record ต่อหนึ่งหน้า รวมหน้าที่ไม่มีข้อความ</td>
+</tr>
+<tr>
+<td><code>page-stats.csv</code></td>
+<td>จำนวนตัวอักษร/บรรทัด/ภาพต่อหน้า</td>
+</tr>
+<tr>
+<td><code>lines.txt</code></td>
+<td>ข้อความแต่ละบรรทัดพร้อม <code>line_id</code> และขนาด font</td>
+</tr>
+</tbody></table>
+<p>เปิด <code>page-stats.csv</code> และ <code>lines.txt</code> ใน editor ดูว่าเลขหน้าและข้อความสัมพันธ์กับ PDF หรือไม่ เปิด PDF ใน Preview/Edge/Document Viewer ที่มีในเครื่องเพื่อตรวจเทียบได้ VS Code บางเครื่องไม่มี PDF viewer จึงไม่จำเป็นต้องติดตั้ง extension เพิ่มเพื่อจบขั้นนี้</p>
+<p><strong>หน้า 0 characters ต้องตรวจ:</strong> อาจเป็นหน้าเปล่าจริง ภาพประกอบ ภาพสแกน หรือ encoding ที่อ่านกลับไม่ได้ การมี/ไม่มี image object ไม่ใช่หลักฐานสรุปว่าหน้าเปล่า หากหน้าเป็นสแกนที่มีข้อความ ให้จดไว้ว่า OCR จำเป็น ขั้นตอนนี้เก็บแต่ text layer; ให้เลือกไฟล์มีข้อความสำหรับทำจนจบในสัปดาห์นี้</p>
+<h2 id="step-21">12. ดูบรรทัดและชื่อหัวข้อของ PDF แรก</h2>
+<p>ดูบรรทัดบน PDF หน้าที่เลือก เช่นหน้า 3:</p>
+<pre><code class="language-text">python scripts/07_preview.py --pdf &quot;data/pdfs/pdf1.pdf&quot; --page 3
+</code></pre>
+<p>เปลี่ยน <code>3</code> เป็นหน้าที่มีหัวข้อจริง ไม่จำเป็นต้องเป็นหน้าเดียวกันทุกคน ตัวอย่างรูปแบบบรรทัด:</p>
+<pre><code class="language-text">[p0003-l0001] Introduction
+[p0003-l0002] First paragraph ...
+[p0003-l0010] Background
+</code></pre>
+<p><code>p0003-l0010</code> หมายถึง PDF หน้า 3 บรรทัดที่ 10 ในผล extraction ชุดนี้ เป็น anchor สำหรับแบ่งหัวข้อ ไม่ใช่เลขบรรทัดที่หนังสือพิมพ์ไว้ บันทึก anchor ของหัวข้ออย่างน้อย 2 หัวข้อไว้ใช้ตรวจในบทต่อไป</p>
+<p>การอ่านเรียงตำแหน่งของ PDF มีข้อจำกัดเมื่อหลายคอลัมน์ ตาราง หรือโค้ด การเก็บครบทุกบรรทัดหมายถึงครบจากผล extractor นี้ ส่วนความถูกต้องเมื่อเทียบหน้าจริงยังต้องตรวจ (<a href="https://pymupdf.readthedocs.io/en/latest/app1.html">PyMuPDF text extraction</a>)</p>
+<h2 id="step-22">13. สร้างแผนแบ่งหัวข้อ</h2>
+<p>รัน:</p>
+<pre><code class="language-text">python scripts/04_plan_sections.py --pdf &quot;data/pdfs/pdf1.pdf&quot;
+</code></pre>
+<p>สคริปต์ทำดังนี้:</p>
+<ol>
+<li>หากมี PDF bookmarks จะลองจับชื่อหัวข้อกับข้อความ 1–4 บรรทัดบนหน้าเป้าหมาย รองรับหัวข้อขึ้นหลายบรรทัดและรูปแบบ <code>Chapter 4.</code> ที่แยกจากชื่อเรื่อง</li>
+<li>ถ้าหาไม่พบ จะให้คำแนะนำจากหน้าข้างเคียง โดยคงสถานะให้ผู้เรียนตรวจ ไม่ย้ายขอบเขตเองเงียบ ๆ</li>
+<li>ถ้าไม่มี bookmarks จะเสนอหัวข้อจากขนาด font ที่เด่นกว่าข้อความหลัก เป็น heuristic ที่ต้องตรวจ</li>
+<li>หากไม่มีข้อเสนอเลย นักเรียนกำหนดหัวข้อเองจาก line IDs ของเอกสารจริงได้</li>
+</ol>
+<p>ไฟล์ผลอยู่ในโฟลเดอร์เอกสารเดิม:</p>
+<ul>
+<li><code>boundaries.proposed.json</code>: ข้อเสนอที่โปรแกรมสร้างใหม่ได้</li>
+<li><code>boundaries.json</code>: สำเนาสำหรับนักเรียนตรวจและแก้ สร้างครั้งแรกเท่านั้น การรัน planner ซ้ำจะเก็บไฟล์ที่นักเรียนแก้ไว้</li>
+<li><code>section-plan-report.json</code>: จำนวน accepted/unresolved และวิธีที่ใช้เสนอหัวข้อ</li>
+</ul>
+<h2 id="step-23">14. ตรวจและแก้ boundaries.json ใน VS Code</h2>
+<p>นี่คือขั้นตอนจำแนกหัวข้อก่อนสร้าง section chunks เปิด <code>boundaries.json</code>, <code>lines.txt</code> และ PDF เทียบกัน จะใช้ Split Editor เพื่อดูสองไฟล์ข้างกันก็ได้</p>
+<p>สถานะที่พบ:</p>
+<table>
+<thead>
+<tr>
+<th>status</th>
+<th>ความหมายและสิ่งที่ต้องทำ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>accepted</code></td>
+<td>โปรแกรมมี anchor หรือเราใส่ anchor แล้ว ยังต้องตรวจให้ถูกก่อนยืนยันทั้งไฟล์</td>
+</tr>
+<tr>
+<td><code>unresolved</code></td>
+<td>ยังไม่มีตำแหน่งแน่นอน ต้องใส่ line/page จริง หรือระบุว่าเป็น bookmark ที่ไม่ใช่ขอบเขตหัวข้อ</td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td>ข้ามเฉพาะ bookmark/ข้อเสนอที่ไม่ใช่หัวข้อ เช่น navigation ซ้ำ หรือ font candidate ที่เป็นคำบนปก พร้อมเหตุผลใน <code>note</code>; ข้อความต้นทางยังอยู่</td>
+</tr>
+</tbody></table>
+<p>ตัวอย่าง boundary หนึ่งรายการ รูปแบบนี้อยู่ภายใน list <code>boundaries</code> ของไฟล์ที่โปรแกรมสร้าง ตัวเลข/line ID ต้องใช้ของ PDF ตนเอง:</p>
+<pre><code class="language-json">{
+  &quot;level&quot;: 1,
+  &quot;title&quot;: &quot;Introduction&quot;,
+  &quot;pdf_page&quot;: 3,
+  &quot;line_id&quot;: &quot;p0003-l0001&quot;,
+  &quot;method&quot;: &quot;manual_review&quot;,
+  &quot;status&quot;: &quot;accepted&quot;,
+  &quot;note&quot;: &quot;Checked against the heading on PDF page 3&quot;
+}
+</code></pre>
+<p>ตรวจทีละรายการ:</p>
+<ol>
+<li><code>title</code> ตรงหัวข้อจริงหรือไม่; <code>level</code> เป็นจำนวนเต็มบวก เช่น 1 = บท, 2 = หัวข้อย่อย, 3 = หัวข้อย่อยอีกชั้น</li>
+<li>ใช้ <code>07_preview.py --page N</code> หา <code>line_id</code> ที่เป็นบรรทัดเริ่มหัวข้อ ถ้าหัวข้อสองบรรทัด ให้ชี้บรรทัดแรก</li>
+<li><code>pdf_page</code> ต้องตรงหน้าของ line ID</li>
+<li>หาก bookmark ชี้หน้าท้ายบทหรือคลาดหน้า ให้หาหัวข้อจริงและแก้ anchor การไม่พบชื่อบนหน้า bookmark ไม่ได้แปลว่า OCR เสีย ไม่ควร skip บทที่มีเนื้อหาจริงเพื่อให้โปรแกรมผ่าน เพราะอาจทำให้ hierarchy สืบทอดผิดบท</li>
+<li>หากเป็น navigation bookmark ซ้ำจริง ๆ หรือ font candidate ที่ตรวจแล้วไม่ใช่หัวข้อ จึงใช้ <code>status: &quot;skip&quot;</code> และใส่เหตุผลใน <code>note</code></li>
+<li>เรียง boundary ตามลำดับที่ปรากฏในเอกสาร หัวข้อหลายอันอยู่หน้าเดียวกันได้ แต่ต้องเป็น line ID คนละจุดตามจริง กรณี parent/child ใช้ anchor เดียวกัน ต้องเรียง parent ก่อน child และ level เพิ่มขึ้น</li>
+<li>สำหรับไฟล์ไม่มี TOC ตรวจ font candidates ว่าเป็นหัวข้อจริงหรือเพียงชื่อบนปก/หัวกระดาษ เพิ่ม/ลบ/แก้ให้ตรงกับเอกสาร หากไม่มี candidate ให้เพิ่ม boundary อย่างน้อยสองรายการแบบตัวอย่าง</li>
+<li>คง <code>document_id</code> เดิมที่โปรแกรมสร้าง ห้ามคัดลอกจาก PDF ของเพื่อน</li>
+<li>เมื่อครบแล้วเปลี่ยนค่าบนสุด <code>&quot;reviewed&quot;: false</code> เป็น <code>&quot;reviewed&quot;: true</code> และ Save ด้วย <code>Ctrl+S</code> หรือ <code>Command+S</code></li>
+</ol>
+<p>JSON ใช้ double quotes, <code>true</code>/<code>false</code> ตัวเล็ก ไม่มี comments และไม่มี comma หลังรายการสุดท้าย VS Code จะแสดงจุดที่ JSON ผิด อย่าแทรกคำอธิบายภาษาไทยนอก string</p>
+<p>หากต้องการเริ่มการ review ใหม่ทั้งหมด ให้เปลี่ยนชื่อ <code>boundaries.json</code> เป็น <code>boundaries.backup.json</code> ใน Explorer แล้วรัน planner อีกครั้ง โปรแกรมจะสร้าง review file ใหม่ ส่วนข้อความต้นทางไม่เปลี่ยน</p>
+<h2 id="step-24">15. สร้าง sections ตามหัวข้อที่ตรวจแล้ว</h2>
+<p>รัน:</p>
+<pre><code class="language-text">python scripts/05_build_sections.py --pdf &quot;data/pdfs/pdf1.pdf&quot;
+</code></pre>
+<p>ถ้ารายการยัง unresolved หรือ <code>reviewed</code> ยัง false โปรแกรมจะอธิบายจุดที่ต้องแก้ ให้แก้ไฟล์ review แล้วรันใหม่</p>
+<p>ผลสำคัญ:</p>
+<pre><code class="language-text">Sections: ...
+Accepted boundaries: ...; skipped: ...
+Line coverage: 123/123 (every source line exactly once)
+Original line characters retained: ...
+</code></pre>
+<p>ตัวเลข 123 เป็นตัวอย่างเท่านั้น ตัวตั้งและตัวหารต้องเท่ากันสำหรับ PDF ของตนเอง</p>
+<p>ได้ <code>sections.jsonl</code> และ <code>sections-report.json</code> หนึ่ง section อาจกินหลายหน้า และหนึ่งหน้ามีหลาย section ได้ โครงสร้างเช่น <code>Part I &gt; Chapter 1 &gt; Background</code> เก็บใน <code>heading_path</code> ข้อความก่อนหัวข้อแรกเก็บเป็น <code>Front matter</code> เพื่อรักษาข้อความที่ดึงออกมาได้ รายการ parent ที่เริ่มจุดเดียวกับ child จะใช้ประกอบ path โดยไม่คัดลอกเนื้อหาซ้ำ</p>
+<p>เปิดดูรายงานและตัวอย่าง:</p>
+<pre><code class="language-text">python scripts/07_preview.py --pdf &quot;data/pdfs/pdf1.pdf&quot;
+</code></pre>
+<p>ถ้าไม่มี boundaries เลย โปรแกรมจะได้ section ชื่อ <code>Document</code> เดียว ซึ่งเป็น fallback ที่ซื่อสัตย์ต่อข้อมูล แต่ยังไม่ผ่านงานแบ่งหัวข้อของคาบนี้ ให้กลับไปเพิ่มอย่างน้อยสองหัวข้อที่มีอยู่จริงก่อน</p>
+<h2 id="step-25">16. แบ่งแต่ละ section เป็น chunks</h2>
+<p>รัน:</p>
+<pre><code class="language-text">python scripts/06_chunk_sections.py --pdf &quot;data/pdfs/pdf1.pdf&quot; --max-chars 900 --overlap-chars 100
+</code></pre>
+<p>ความหมาย:</p>
+<ul>
+<li><code>--max-chars 900</code>: ขนาดข้อความแต่ละ chunk ไม่เกิน 900 Unicode code points ตามผล extraction</li>
+<li><code>--overlap-chars 100</code>: ย้อนข้อความประมาณ 100 ตัวอักษรภายใน section เพื่อคงบริบทต่อเนื่อง</li>
+<li>พยายามจบชิ้นตรงย่อหน้า/บรรทัด/ช่องว่างก่อน หากบรรทัดยาวเกินก็แบ่งด้วยขอบเขตตัวอักษร</li>
+<li>chunks อยู่ภายใน section เดียว ไม่ลากข้อความข้ามหัวข้อ</li>
+<li>heading path อยู่ใน metadata; ข้อความต้นทางของ heading เก็บไว้ใน section</li>
+</ul>
+<p>ได้ <code>chunks.jsonl</code> และ <code>chunks-report.json</code> ที่รายงาน <code>Coverage complete: True</code> หมายถึงข้อความทุกส่วนของ sections มีอยู่ใน chunk อย่างน้อยหนึ่งครั้ง การซ้ำใน overlap เป็นสิ่งที่ตั้งใจ <strong>characters ไม่ใช่ tokens</strong> และค่า 900 นี้ไม่ใช่คำรับรองว่าจะพอดีกับ context ของ all-minilm ทุกข้อความ การใช้ tokenizer และฝังเวกเตอร์ของ chunks เป็นคาบถัดไป</p>
+<p>ตัวอย่างข้อมูลในหนึ่ง chunk แบบย่อ:</p>
+<pre><code class="language-json">{
+  &quot;chunk_id&quot;: &quot;...&quot;,
+  &quot;source_file&quot;: &quot;pdf1.pdf&quot;,
+  &quot;section_id&quot;: &quot;...&quot;,
+  &quot;heading_path&quot;: [&quot;Chapter 1&quot;, &quot;Background&quot;],
+  &quot;text&quot;: &quot;ข้อความจริงจาก PDF ...&quot;,
+  &quot;char_count&quot;: 740,
+  &quot;pdf_page_start&quot;: 3,
+  &quot;pdf_page_end&quot;: 4,
+  &quot;source_pages&quot;: [3, 4],
+  &quot;source_spans&quot;: [
+    {&quot;pdf_page&quot;: 3, &quot;line_id&quot;: &quot;p0003-l0010&quot;, &quot;start_char&quot;: 0, &quot;end_char&quot;: 23}
+  ]
+}
+</code></pre>
+<p>ตัวอย่างย่อข้างบนไม่ได้แสดง fields ทั้งหมด ชื่อหัวข้อและเลขหน้าของนักเรียนจะต่างกัน</p>
+<h2 id="step-26">17. ตรวจผล PDF แรกให้เห็นภาพ</h2>
+<p>รัน:</p>
+<pre><code class="language-text">python scripts/07_preview.py --pdf &quot;data/pdfs/pdf1.pdf&quot; --chunks 5
+</code></pre>
+<p>โปรแกรมแสดงรายการ section paths, ช่วงหน้า, จำนวน characters และตัวอย่าง chunks สั้น ๆ พร้อมเขียน <code>preview.md</code> ในโฟลเดอร์เอกสารเดียวกัน เปิดไฟล์นี้ใน VS Code แล้วกด Open Preview เพื่ออ่านง่ายขึ้น</p>
+<p>ตรวจพร้อมครู:</p>
+<ol>
+<li>เลือกหัวข้อสองอันที่อยู่หน้าเดียวกัน ถ้ามี ดูว่าเนื้อหาแยกถูกตาม anchor</li>
+<li>เลือก section ที่ยาวหลายหน้า ดู page ranges และ <code>source_pages</code> ของ chunk</li>
+<li>เปิด chunk สองชิ้นที่ต่อกันใน section เดียว ดูข้อความ overlap</li>
+<li>ดู <code>sections-report.json</code> ว่า <code>all_lines_assigned_once</code> เป็น true และไม่มี missing/duplicate line IDs</li>
+<li>ดู <code>chunks-report.json</code> ว่า <code>coverage_complete</code> เป็น true ตัวเลขครอบคลุมข้อความที่ดึงได้ ไม่ได้พิสูจน์ว่า OCR/layout ของ PDF ทุกแบบถูกต้อง</li>
+</ol>
+<p>ลองรัน chunk อีกครั้งด้วย <code>--max-chars 600 --overlap-chars 80</code> ดูว่าจำนวน chunks เปลี่ยนอย่างไร จากนั้นรันกลับ 900/100 หากครูกำหนดค่าร่วมกัน การรันขั้น chunk ซ้ำเขียนผล chunks ของเอกสารนั้นใหม่</p>
+<h2 id="step-27">18. ทำ PDF ที่สองและสามด้วยตนเอง</h2>
+<p>ไม่ต้องสร้าง venv ใหม่ ไม่ต้องติดตั้ง library ซ้ำ และไม่ต้องแก้ path ชื่อผู้ใช้ใน Python เปลี่ยนค่า <code>--pdf</code> ตามไฟล์</p>
+<p><strong>PDF ที่สอง</strong></p>
+<pre><code class="language-text">python scripts/03_extract_pdf.py --pdf &quot;data/pdfs/pdf2.pdf&quot;
+python scripts/04_plan_sections.py --pdf &quot;data/pdfs/pdf2.pdf&quot;
+</code></pre>
+<p>หยุดที่นี่เพื่อเปิด <code>boundaries.json</code> ของ <strong>pdf2</strong> ตรวจแก้หัวข้อและตั้ง <code>reviewed: true</code> แล้วจึงรัน:</p>
+<pre><code class="language-text">python scripts/05_build_sections.py --pdf &quot;data/pdfs/pdf2.pdf&quot;
+python scripts/06_chunk_sections.py --pdf &quot;data/pdfs/pdf2.pdf&quot; --max-chars 900 --overlap-chars 100
+python scripts/07_preview.py --pdf &quot;data/pdfs/pdf2.pdf&quot; --chunks 3
+</code></pre>
+<p><strong>PDF ที่สาม</strong></p>
+<pre><code class="language-text">python scripts/03_extract_pdf.py --pdf &quot;data/pdfs/pdf3.pdf&quot;
+python scripts/04_plan_sections.py --pdf &quot;data/pdfs/pdf3.pdf&quot;
+</code></pre>
+<p>ตรวจ <code>boundaries.json</code> ของ <strong>pdf3</strong> ให้ครบก่อน แล้วรัน:</p>
+<pre><code class="language-text">python scripts/05_build_sections.py --pdf &quot;data/pdfs/pdf3.pdf&quot;
+python scripts/06_chunk_sections.py --pdf &quot;data/pdfs/pdf3.pdf&quot; --max-chars 900 --overlap-chars 100
+python scripts/07_preview.py --pdf &quot;data/pdfs/pdf3.pdf&quot; --chunks 3
+</code></pre>
+<p>แต่ละ PDF มีโฟลเดอร์ผลของตนเอง ตรวจชื่อ path ที่สคริปต์พิมพ์ อย่าเปิด review file ของ PDF แรกมาแก้แทนไฟล์ใหม่</p>
+<p>ถ้าต้องการฝึกใช้ชื่อจริง ให้ Rename สำเนาเป็นชื่ออื่นใน <code>data/pdfs</code> แล้วเปลี่ยน <code>--pdf &quot;data/pdfs/ชื่อใหม่.pdf&quot;</code> ทุกคำสั่ง สคริปต์ตั้ง output ตามชื่อและเนื้อหาใหม่เอง จึงต้อง review file ในโฟลเดอร์ผลใหม่นั้น ไม่ต้องแก้โค้ด <code>.py</code></p>
+<h2 id="step-28">19. ส่งงานและจบคาบ</h2>
+<p>ทำตาราง 3 แถว ลงไฟล์ <code>lab-notes.md</code> ด้วย New File ใน VS Code หรือคัดลอก <a href="lab-notes.template.md">lab-notes.template.md</a> ที่แจกแล้วเปลี่ยนชื่อ:</p>
+<table>
+<thead>
+<tr>
+<th>PDF</th>
+<th align="right">จำนวนหน้า</th>
+<th>หน้าที่ไม่มี text</th>
+<th align="right">จำนวน bookmarks</th>
+<th>วิธีหา/แก้หัวข้อ</th>
+<th align="right">sections</th>
+<th align="right">chunks</th>
+<th>สิ่งที่พบ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pdf1.pdf</td>
+<td align="right">...</td>
+<td>...</td>
+<td align="right">...</td>
+<td>bookmarks/manual</td>
+<td align="right">...</td>
+<td align="right">...</td>
+<td>...</td>
+</tr>
+<tr>
+<td>pdf2.pdf</td>
+<td align="right">...</td>
+<td>...</td>
+<td align="right">...</td>
+<td>...</td>
+<td align="right">...</td>
+<td align="right">...</td>
+<td>...</td>
+</tr>
+<tr>
+<td>pdf3.pdf</td>
+<td align="right">...</td>
+<td>...</td>
+<td align="right">...</td>
+<td>...</td>
+<td align="right">...</td>
+<td align="right">...</td>
+<td>...</td>
+</tr>
+</tbody></table>
+<p>ส่ง <code>lab-notes.md</code> และไฟล์ผลที่ครูกำหนดจากแต่ละเอกสาร เช่น <code>page-stats.csv</code>, <code>boundaries.json</code>, <code>sections-report.json</code>, <code>chunks-report.json</code>, <code>preview.md</code> รวมถึงโค้ดถ้ามีแก้ ไม่ต้องส่ง <code>.venv</code> และไม่ต้องรวม PDF ต้นฉบับเมื่อครูขอเฉพาะรายงาน ไฟล์ผลบางตัวมีข้อความจาก PDF ให้ส่งตามช่องทางและขอบเขตข้อมูลที่ครูกำหนด</p>
+<p>ตอบสั้น ๆ ใน notes:</p>
+<ol>
+<li>Ollama, embedding model และ PDF parser ทำหน้าที่ต่างกันอย่างไร?</li>
+<li>ทำไม 0 characters จึงยังสรุปว่าเป็นหน้าเปล่าไม่ได้?</li>
+<li>ทำไมหนึ่งหน้าไม่จำเป็นต้องเป็นหนึ่ง section/chunk?</li>
+<li>เมื่อ bookmark ชี้ไม่ตรงหัวข้อ คุณแก้ page/line anchor อย่างไร?</li>
+<li>เปลี่ยน max-chars แล้วจำนวน chunks เปลี่ยนอย่างไร และ characters ต่างจาก tokens อย่างไร?</li>
+</ol>
+<p>หาก activate environment ไว้ ให้ปิดเมื่อเสร็จด้วย <code>deactivate</code> หากเรียก Python ใน <code>.venv</code> ตรงโดยไม่ได้ activate ก็ปิด Terminal ได้เลย ถ้าเปิด Terminal ใหม่ในวันอื่น ให้กลับ root แล้ว activate <code>.venv</code> ใหม่หรือเรียก interpreter ตรงตามวิธีเดิม ส่วนข้อมูลที่บันทึกบนดิสก์ยังอยู่</p>
+<p><strong>สิ้นสุด lab workshop สัปดาห์นี้: ทุกคนได้ section chunks ของ PDF แรก และฝึกทำอีกสองไฟล์ด้วยตนเอง</strong></p>
+<h2 id="step-29">ตารางไฟล์ Python: ต้องแก้อะไรบนเครื่องส่วนตัว?</h2>
+<table>
+<thead>
+<tr>
+<th>ไฟล์</th>
+<th>หน้าที่</th>
+<th>ส่วนที่นักเรียนอาจเปลี่ยน</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>lab_common.py</code></td>
+<td>หา root และจัดการไฟล์/JSON</td>
+<td>ไม่ต้องแก้ชื่อผู้ใช้หรือ root ในไฟล์</td>
+</tr>
+<tr>
+<td><code>section_engine.py</code></td>
+<td>จับหัวข้อและประกอบ sections</td>
+<td>ไม่ต้องแก้เพื่อเปลี่ยน PDF</td>
+</tr>
+<tr>
+<td><code>01_check_setup.py</code></td>
+<td>ตรวจ Python/library/Ollama</td>
+<td><code>--model</code> ถ้าเลือกโมเดลอื่น</td>
+</tr>
+<tr>
+<td><code>02_embedding_demo.py</code></td>
+<td>ทดลองข้อความ → เวกเตอร์</td>
+<td>เปลี่ยน <code>sentences</code> ได้; ค่า default ใช้ร่วมกันได้เลย</td>
+</tr>
+<tr>
+<td><code>03_extract_pdf.py</code></td>
+<td>อ่าน PDF แสดง characters และบันทึก lines</td>
+<td>เปลี่ยน <code>--pdf</code></td>
+</tr>
+<tr>
+<td><code>04_plan_sections.py</code></td>
+<td>เสนอ boundary จาก bookmarks/font</td>
+<td>เปลี่ยน <code>--pdf</code>; แก้ผล <code>boundaries.json</code> ตามเอกสารจริง</td>
+</tr>
+<tr>
+<td><code>05_build_sections.py</code></td>
+<td>ใช้ boundary ที่ตรวจแล้วสร้าง sections</td>
+<td>เปลี่ยน <code>--pdf</code></td>
+</tr>
+<tr>
+<td><code>06_chunk_sections.py</code></td>
+<td>แบ่ง section เป็น chunks</td>
+<td><code>--pdf</code>, <code>--max-chars</code>, <code>--overlap-chars</code></td>
+</tr>
+<tr>
+<td><code>07_preview.py</code></td>
+<td>ดู lines/section/chunk และสร้าง preview</td>
+<td><code>--pdf</code>, <code>--page</code>, <code>--chunks</code></td>
+</tr>
+</tbody></table>
+<p>พิมพ์ <code>python scripts/ชื่อไฟล์.py --help</code> ดู options ได้ โดย <code>lab_common.py</code> และ <code>section_engine.py</code> เป็น helper ที่ scripts เรียกใช้ ไม่ใช่ขั้นตอนที่ต้องรันแยก</p>
+<h2 id="step-30">หากติดปัญหา</h2>
+<table>
+<thead>
+<tr>
+<th>อาการ</th>
+<th>ตรวจ/แก้</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ollama: command not found</code> / not recognized</td>
+<td>เปิดแอปหลังติดตั้ง ปิดเปิด Terminal ใหม่ ตรวจ PATH ตามคู่มือ OS</td>
+</tr>
+<tr>
+<td><code>address already in use</code> ที่ 11434</td>
+<td>Ollama server อาจทำงานอยู่แล้ว ใช้ตัวเดิม ไม่เปิด <code>ollama serve</code> ซ้ำ</td>
+</tr>
+<tr>
+<td>โหลดโมเดลค้าง/error หลังเปลี่ยนเน็ต</td>
+<td>ใช้เครือข่ายที่พร้อม แล้ว retry <code>ollama pull all-minilm:22m</code>; บันทึก error จริง</td>
+</tr>
+<tr>
+<td>Python command เปิด Store หรือไม่พบ</td>
+<td>ตรวจ installer/PATH; Windows ลอง <code>py -3.14 --version</code> และใช้ launcher สร้าง venv</td>
+</tr>
+<tr>
+<td><code>Activate.ps1 cannot be loaded</code></td>
+<td>ใช้ Command Prompt activate.bat หรือเรียก <code>.venv\Scripts\python.exe</code> ตรง</td>
+</tr>
+<tr>
+<td><code>No module named pymupdf</code></td>
+<td>ตรวจ <code>sys.executable</code> ต้องเป็น <code>.venv</code>; ติดตั้งด้วย <code>python -m pip install -r requirements.txt</code></td>
+</tr>
+<tr>
+<td>pip หาตัวติดตั้ง PyMuPDF ไม่ได้</td>
+<td>ตรวจ Python3.10–3.14 ปกติ/CPU architecture; ใช้เวอร์ชัน class-tested ก่อน source-build</td>
+</tr>
+<tr>
+<td><code>can&#39;t open file scripts/...</code></td>
+<td>ตรวจ root ด้วย pwd/Get-Location และตำแหน่งโฟลเดอร์ scripts</td>
+</tr>
+<tr>
+<td><code>PDF not found</code></td>
+<td>ตรวจชื่อไฟล์จริง ตัวพิมพ์ใหญ่/เล็ก นามสกุลซ้ำ และ quotes; Ubuntu แยก case</td>
+</tr>
+<tr>
+<td>ข้อความเป็นศูนย์ทุกหน้า</td>
+<td>อาจเป็น scan/encoding อ่านไม่ได้ เปิดดูไฟล์แล้วบันทึกว่า OCR ต้องทำก่อน ใช้ born-digital PDF ทำส่วนที่เหลือ</td>
+</tr>
+<tr>
+<td>ข้อความสลับคอลัมน์/ตารางเสีย</td>
+<td>เป็นข้อจำกัด extraction/reading order เลือกตัวอย่างคอลัมน์เดียวก่อนและบันทึกปัญหา</td>
+</tr>
+<tr>
+<td>มี unresolved boundaries</td>
+<td>แก้ page/line จริงจาก lines.txt; skip เฉพาะที่ไม่ใช่หัวข้อจริงพร้อมเหตุผล</td>
+</tr>
+<tr>
+<td><code>reviewed</code> error</td>
+<td>ตรวจทุก boundary แล้วตั้ง <code>&quot;reviewed&quot;: true</code> ในไฟล์ของ PDF นั้นและ Save</td>
+</tr>
+<tr>
+<td>JSON invalid</td>
+<td>double quotes, ไม่มี comments/trailing comma; ใช้ error line ใน VS Code</td>
+</tr>
+<tr>
+<td>boundary out of document order</td>
+<td>เรียงตามตำแหน่งจริงใน lines.txt ไม่ใช่แค่เลขหัวข้อ</td>
+</tr>
+<tr>
+<td>ได้ section <code>Document</code> เดียว</td>
+<td>ไม่มี accepted boundaries; เพิ่มหัวข้อจริงเพื่อทำโจทย์ section chunks</td>
+</tr>
+<tr>
+<td>หา output ไม่เจอ</td>
+<td>อ่าน <code>Artifacts:</code> จากสคริปต์ แล้วกด Refresh ใน VS Code Explorer</td>
+</tr>
+</tbody></table>
+<p>แหล่งเอกสารทางการรวมไว้ใน <a href="SOURCES.md">SOURCES.md</a> แผนสอนและเกณฑ์ตรวจงานอยู่ใน <a href="INSTRUCTOR.th.md">INSTRUCTOR.th.md</a></p>
+<h2 id="step-31">ผลทดสอบและชุดตรวจสำหรับครู</h2>
+<p>ดู <a href="VALIDATION.md">ผลรันจริงบน macOS และ Ubuntu container</a> พร้อมจำนวน sections/chunks ของ PDF ตัวอย่างทั้งสาม ส่วน Windows ยังไม่มีผลรันจริงในรอบนี้ มี <a href="VERIFY-ON-WINDOWS.md">ขั้นตอนตรวจบน Windows</a> ให้ครูดำเนินการก่อนใช้ในชั้นเรียน ชุดทดสอบและเฉลยครูเป็นอุปกรณ์ตรวจ lab ไม่ใช่ขั้นตอนส่งงานของนักเรียน</p>
+</article></div>
+<footer>ชุดฝึกลงมือทำด้วยตนเอง · โค้ดและคู่มือเก็บในแพ็กเกจเดียว · ไม่ต้องติดตั้ง Node.js เพื่ออ่านหน้านี้</footer>
+<script>
+try{if(localStorage.getItem('lab-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}
+document.querySelector('#theme').onclick=()=>{document.documentElement.classList.toggle('dark');try{localStorage.setItem('lab-theme',document.documentElement.classList.contains('dark')?'dark':'light')}catch(e){}};
+document.querySelectorAll('pre').forEach(pre=>{const b=document.createElement('button');b.type='button';b.textContent='คัดลอก';b.setAttribute('aria-label','คัดลอกคำสั่ง');b.onclick=async()=>{const t=pre.querySelector('code').textContent;try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();document.execCommand('copy');a.remove()}b.textContent='คัดลอกแล้ว';setTimeout(()=>b.textContent='คัดลอก',1500)};pre.append(b)});
+</script></body></html>

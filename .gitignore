@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+data/pdfs/*
+!data/pdfs/.gitkeep
+data/extracted/*
+!data/extracted/.gitkeep
+data/demo/
+validation/
+.venv-1/
+.DS_Store
+*.zip
